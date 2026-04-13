@@ -1,0 +1,53 @@
+[build-system]
+requires = ["setuptools>=69", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "speech-recognizer-local"
+version = "0.1.0"
+description = "Fast local CUDA speech recognition with Pixi and ROS 2 Humble."
+readme = "README.md"
+requires-python = ">=3.11,<3.12"
+authors = [
+  { name = "Aapo2001" }
+]
+dependencies = []
+
+[project.scripts]
+speech-recognizer = "speech_recognizer.cli:main"
+speech-recognizer-ros = "speech_recognizer.ros2_node:main"
+
+[tool.setuptools.package-dir]
+"" = "src"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pixi.workspace]
+channels = ["robostack-humble", "conda-forge"]
+platforms = ["win-64", "linux-64"]
+
+[tool.pixi.dependencies]
+python = "3.11.*"
+pip = "*"
+numpy = "*"
+libblas = { version = "*", build = "*openblas" }
+libcblas = { version = "*", build = "*openblas" }
+liblapack = { version = "*", build = "*openblas" }
+portaudio = "*"
+pytest = "*"
+ros-humble-rclpy = "*"
+ros-humble-ros2cli = "*"
+ros-humble-std-msgs = "*"
+
+[tool.pixi.pypi-dependencies]
+speech-recognizer-local = { path = ".", editable = true }
+faster-whisper = "==1.2.1"
+sounddevice = "==0.5.3"
+
+[tool.pixi.tasks]
+doctor = "python -m speech_recognizer.cli doctor"
+file = "python -m speech_recognizer.cli transcribe-file"
+mic = "python -m speech_recognizer.cli transcribe-mic"
+ros-node = "python -m speech_recognizer.ros2_node"
+test = "pytest -q"
